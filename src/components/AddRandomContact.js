@@ -1,14 +1,16 @@
 import contacts from "../contacts.json";
 
-function getRandomContact(array) {
-    let randomContact = array[Math.floor((Math.random() * contacts.length))]
-    return randomContact;
-}
+const AddRandomContact = ({ addContact }) => {
 
-const AddRandomContact = (props) => {
+  const getRandomContact = (array) => {
+    let randomContact = array[Math.floor((Math.random() * array.length))]
+    console.log(randomContact)
+    return randomContact;
+  }
+
   return (
     <div>
-    <button onClick = {() => {props.addContact(getRandomContact(contacts))}}>Add Random Contact</button>
+    <button onClick = {() => {addContact(getRandomContact(contacts))}}>Add Random Contact</button>
     </div>
   )
 } 

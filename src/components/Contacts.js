@@ -1,5 +1,5 @@
 import './Contacts.css';
-import { Component } from 'react';
+import { useState } from 'react';
 import contacts from '../contacts.json';
 import AddRandomContact from './AddRandomContact.js';
 import ContactCard from './ContactCard.js';
@@ -7,27 +7,22 @@ import SortButton from './SortButton';
 
 const contactsArray = contacts;
 
-let initialArray = [];
-for (let i = 0; i < 5; i += 1) {
-initialArray.push(contactsArray[i])
-};
+let initialArray = contactsArray.slice(0, 5);
 
-class Contacts extends Component {
-    state = {
-        contactsList: initialArray,
-    }
+const Contacts = () => {
+    const [contactsList, setContactsList] = useState(initialArray)
 
-    handleAddContact = (contact) => {
-        if (!this.state.contactsList.includes(contact)) {
-            const newContacts = [...this.state.contactsList, contact];
-            this.setState({
-                contactsList: newContacts,
-        })
+    const handleAddContact = (contact) => {
+        console.log(contactsList, contactsArray)
+        if (!contactsList.includes(contact)) {
+            const newContacts = [...contactsList, contact];
+            setContactsList(newContacts)
         }
     }
 
-    handleSortByName = () => {
-        const newContacts = [...this.state.contactsList];
+    const handleSortByName = () => {
+        console.log(contactsList)
+        const newContacts = [...contactsList];
         const sortedContacts = newContacts.sort(function(a, b) {
             if (a.name > b.name) {
                 return 1;
@@ -36,59 +31,53 @@ class Contacts extends Component {
                 return -1;
               }
               return 0;
-          });
-        this.setState({
-            contactsList: sortedContacts,
-        })
+        });
+        setContactsList(sortedContacts)
     }
 
-    handleSortByPopularity = () => {
-        const newContacts = [...this.state.contactsList];
+    const handleSortByPopularity = () => {
+        console.log(contactsList)
+        const newContacts = [...contactsList];
         const sortedContacts = newContacts.sort(function(a, b) {
             return b.popularity - a.popularity;
         });
-        this.setState({
-            contactsList: sortedContacts,
-        })
+        setContactsList(sortedContacts)
     }
 
-    handleDeleteContact = (id) => {
-        const newContacts = [...this.state.contactsList];
+    const handleDeleteContact = (id) => {
+        console.log(contactsList)
+        const newContacts = [...contactsList];
         const index = newContacts.findIndex((contact) => contact.id === id);
         newContacts.splice(index, 1);
-        this.setState({
-            contactsList: newContacts,
-        });
+        setContactsList(newContacts)
     }
-
-    render(){
-        return (
-        <div>
-            <h1>IronContacts</h1>
-            <div className='buttons-div'>
-                <AddRandomContact addContact={this.handleAddContact} />
-                <SortButton handleSort={this.handleSortByName} name='Sort by name'/>
-                <SortButton handleSort={this.handleSortByPopularity} name='Sort by popularity'/>
-            </div>
-            <table className='table'>
-            <thead>
-                <tr>
-                    <th>Picture</th>
-                    <th>Name</th>
-                    <th>Popularity</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-                <tbody className='cards'>
-            {this.state.contactsList.map((item) => (
-                <ContactCard key={item.id} pictureUrl={item.pictureUrl} name={item.name} popularity={item.popularity} deleteContact={() => {this.handleDeleteContact(item.id)}}/>
-            )
-            )}
-            </tbody>
-            </table>
+    return (
+    <div>
+    {console.log(contactsList)}
+        <h1>IronContacts</h1>
+        <div className='buttons-div'>
+            <AddRandomContact addContact={handleAddContact} />
+            <SortButton handleSort={handleSortByName} name='Sort by name'/>
+            <SortButton handleSort={handleSortByPopularity} name='Sort by popularity'/>
         </div>
+        <table className='table'>
+        <thead>
+            <tr>
+                <th>Picture</th>
+                <th>Name</th>
+                <th>Popularity</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+            <tbody className='cards'>
+        {contactsList.map((item) => (
+            <ContactCard key={item.id} pictureUrl={item.pictureUrl} name={item.name} popularity={item.popularity} deleteContact={() => {handleDeleteContact(item.id)}}/>
         )
-    }
+        )}
+        </tbody>
+        </table>
+    </div>
+    )
 }
 
 export default Contacts;
